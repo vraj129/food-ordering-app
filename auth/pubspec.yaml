@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_sign_in: ^5.4.4
+  http: ^0.13.5
+  mocktail: ^0.3.0
 
 dev_dependencies:
   flutter_test:
