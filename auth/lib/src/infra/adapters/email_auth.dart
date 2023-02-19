@@ -6,7 +6,7 @@ import 'package:auth/src/domain/signup_service_contract.dart';
 import 'package:auth/src/domain/token.dart';
 import 'package:auth/src/infra/api/auth_api_contract.dart';
 
-class EmailAuth implements IAuthService, ISignUpService {
+class EmailAuth implements IAuthService {
   final IAuthApi _authApi;
   Credential? _credential;
 
@@ -32,21 +32,7 @@ class EmailAuth implements IAuthService, ISignUpService {
   }
 
   @override
-  Future<void> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<Token>> signUp(
-      String name, String email, String password) async {
-    Credential credential = Credential(
-      authType: AuthType.email,
-      email: email,
-      password: password,
-    );
-    var result = await _authApi.signUp(credential);
-    if (result.isError) return result.asError!;
-    return Result.value(Token(tokenValue: result.asValue!.value));
+  Future<Result<bool>> signOut(Token token) async {
+    return await _authApi.signOut(token);
   }
 }

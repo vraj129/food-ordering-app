@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auth/src/domain/credential.dart';
+import 'package:auth/src/domain/token.dart';
 import 'package:auth/src/infra/api/auth_api_contract.dart';
 
 // ignore: depend_on_referenced_packages
@@ -20,6 +21,9 @@ class AuthApi implements IAuthApi {
 
   /// Url endpoint for signUp
   String signUpEndPoint;
+
+  /// Url endpoint for signOut
+  String signOutEndPoint;
 
   /// Your json key value in which the token value be returned or could be taken from. for example
   /// {
@@ -44,6 +48,7 @@ class AuthApi implements IAuthApi {
     required this.baseUrl,
     required this.signInEndPoint,
     required this.signUpEndPoint,
+    required this.signOutEndPoint,
     required this.responseAuthValueKeyJson,
     required this.serverErrorMessage,
     required this.responseErrorMessageKeyJson,
@@ -67,12 +72,32 @@ class AuthApi implements IAuthApi {
   ) async {
     var response = await _client.post(
       Uri.parse(url),
-      body: Mapper.toJson(credential),
+      body: jsonEncode(
+        Mapper.toJson(credential),
+      ),
+      headers: {
+        "Content-type": "application/json",
+      },
     );
     if (response.statusCode != 200) return Result.error(serverErrorMessage);
     var json = jsonDecode(response.body);
     return json[responseAuthValueKeyJson] != null
         ? Result.value(json[responseAuthValueKeyJson])
         : Result.error(json[responseErrorMessageKeyJson]);
+  }
+
+  @override
+  Future<Result<bool>> signOut(Token token) async {
+    var url = baseUrl + signOutEndPoint;
+    Map<String, String>? headers = {
+      "Content-type": "application/json",
+      "Authorization": token.tokenValue,
+    };
+    var res = await _client.post(Uri.parse(url), headers: headers);
+
+    if (res.statusCode != 200) {
+      return Result.value(false);
+    }
+    return Result.value(true);
   }
 }

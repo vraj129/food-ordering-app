@@ -20,11 +20,12 @@ void main() {
     set = AuthApi(
       client!,
       baseUrl: 'http:baseUrl',
-      signInEndPoint: '/auth/signIn',
-      signUpEndPoint: '/auth/signUp',
+      signInEndPoint: '/auth/signin',
+      signUpEndPoint: '/auth/signup',
       responseAuthValueKeyJson: 'auth_key',
       serverErrorMessage: 'Server error',
       responseErrorMessageKeyJson: 'message',
+      signOutEndPoint: '/auth/signout',
     );
   });
   group('signin', () {
